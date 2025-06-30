@@ -465,6 +465,12 @@ body {
     gap: 12px;
     overflow-x: auto;
     padding-bottom: 5px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.summary-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 .summary-card {
@@ -476,6 +482,7 @@ body {
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
     border-top: 3px solid;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .summary-card:hover {
@@ -535,6 +542,7 @@ body {
 /* Charts Section */
 .charts-section {
     padding: 20px 0;
+    background: #f8fafc;
 }
 
 .chart-container {
@@ -573,11 +581,18 @@ body {
     padding: 4px 8px;
     font-size: 0.8rem;
     color: #64748b;
+    cursor: pointer;
 }
 
 .chart-info {
     font-size: 0.8rem;
     color: #64748b;
+}
+
+.info-text {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 .chart-content {
@@ -587,6 +602,7 @@ body {
 .mobile-chart {
     width: 100% !important;
     height: 250px !important;
+    max-height: 300px;
 }
 
 .chart-legend {
@@ -628,6 +644,7 @@ body {
 /* Insights Section */
 .insights-section {
     padding: 20px 0;
+    background: white;
 }
 
 .insights-list {
@@ -718,6 +735,7 @@ body {
 /* Area Analysis */
 .area-analysis {
     padding: 20px 0;
+    background: #f8fafc;
 }
 
 .area-list {
@@ -794,6 +812,7 @@ body {
 /* Quick Actions */
 .quick-actions {
     padding: 20px 0;
+    background: white;
 }
 
 .quick-action-btn {
@@ -810,12 +829,14 @@ body {
     text-decoration: none;
     color: inherit;
     min-width: 80px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .quick-action-btn:hover {
     background: #f8fafc;
     border-color: #1e40af;
     transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
 }
 
 .quick-action-btn .action-icon {
@@ -828,6 +849,7 @@ body {
     font-weight: 500;
     color: #64748b;
     text-align: center;
+    line-height: 1.2;
 }
 
 .action-grid {
@@ -835,6 +857,62 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+}
+
+/* Age Group Analysis */
+.age-group-analysis {
+    padding: 0;
+}
+
+.age-group-item {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    border-left: 3px solid #1e40af;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.age-group-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
+}
+
+.age-group-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.age-group-stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.age-group-count {
+    background: #1e40af;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.stat-chip {
+    background: rgba(30, 64, 175, 0.1);
+    color: #1e40af;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
 /* Form Styles */
