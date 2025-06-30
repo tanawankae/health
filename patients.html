@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>รายการผู้ป่วย - Health Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="time">9:41</span>
+        </div>
+        <div class="status-right">
+            <span class="battery">🔋 100%</span>
+            <span class="signal">📶</span>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Header with Back Button -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="index.html" class="back-btn">←</a>
+                <div class="header-text">
+                    <h1>รายการผู้ป่วย</h1>
+                    <p>ผู้ป่วยทั้งหมด 20 คน</p>
+                </div>
+                <div class="header-action">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar" id="searchBar" style="display: none;">
+            <div class="search-container">
+                <input type="text" placeholder="ค้นหาชื่อผู้ป่วย..." class="search-input" id="searchInput">
+                <button class="clear-search" id="clearSearch">✕</button>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">ทั้งหมด</button>
+                <button class="filter-btn normal" data-filter="normal">ปกติ</button>
+                <button class="filter-btn warning" data-filter="warning">เฝ้าระวัง</button>
+                <button class="filter-btn danger" data-filter="danger">เสี่ยง</button>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <section class="patient-stats">
+            <div class="stats-row">
+                <div class="mini-stat normal">
+                    <span class="stat-number">8</span>
+                    <span class="stat-text">ปกติ</span>
+                </div>
+                <div class="mini-stat warning">
+                    <span class="stat-number">7</span>
+                    <span class="stat-text">เฝ้าระวัง</span>
+                </div>
+                <div class="mini-stat danger">
+                    <span class="stat-number">5</span>
+                    <span class="stat-text">เสี่ยง</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patients List -->
+        <section class="patients-list">
+            <div class="list-container" id="patientsList">
+                <!-- High Risk Patients First -->
+                <div class="patient-card danger" data-status="danger">
+                    <div class="patient-avatar danger">
+                        <span class="avatar-text">ส</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นายสมชาย ดีมาก</div>
+                        <div class="patient-details">
+                            <span class="age">65 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">160/100</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">180</span>
+                        </div>
+                        <div class="patient-location">เขตราชเทวี</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge danger">🚨 เสี่ยง</div>
+                        <div class="last-update">2 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card danger" data-status="danger">
+                    <div class="patient-avatar danger">
+                        <span class="avatar-text">ก</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นายกิตติ ร่าเริง</div>
+                        <div class="patient-details">
+                            <span class="age">56 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">150/95</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">145</span>
+                        </div>
+                        <div class="patient-location">เขตวังทองหลาง</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge danger">🚨 เสี่ยง</div>
+                        <div class="last-update">5 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card danger" data-status="danger">
+                    <div class="patient-avatar danger">
+                        <span class="avatar-text">ส</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นายสุรชัย กล้าหาญ</div>
+                        <div class="patient-details">
+                            <span class="age">61 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">155/98</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">165</span>
+                        </div>
+                        <div class="patient-location">เขตบางรัก</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge danger">🚨 เสี่ยง</div>
+                        <div class="last-update">1 วัน ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card danger" data-status="danger">
+                    <div class="patient-avatar danger">
+                        <span class="avatar-text">อ</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นายอนันต์ มีชัย</div>
+                        <div class="patient-details">
+                            <span class="age">58 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">148/94</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">155</span>
+                        </div>
+                        <div class="patient-location">เขทุ่งครุ</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge danger">🚨 เสี่ยง</div>
+                        <div class="last-update">2 วัน ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card danger" data-status="danger">
+                    <div class="patient-avatar danger">
+                        <span class="avatar-text">ธ</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นายธนกร มั่นคง</div>
+                        <div class="patient-details">
+                            <span class="age">50 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">142/92</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">130</span>
+                        </div>
+                        <div class="patient-location">เขตบางแค</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge danger">🚨 เสี่ยง</div>
+                        <div class="last-update">3 วัน ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <!-- Warning Patients -->
+                <div class="patient-card warning" data-status="warning">
+                    <div class="patient-avatar warning">
+                        <span class="avatar-text">ว</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นายวิชัย เก่งกาจ</div>
+                        <div class="patient-details">
+                            <span class="age">52 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">140/90</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">110</span>
+                        </div>
+                        <div class="patient-location">เขตพญาไท</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge warning">⚠️ เฝ้าระวัง</div>
+                        <div class="last-update">6 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card warning" data-status="warning">
+                    <div class="patient-avatar warning">
+                        <span class="avatar-text">อ</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นายอภิชัย แข็งแรง</div>
+                        <div class="patient-details">
+                            <span class="age">48 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">135/85</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">125</span>
+                        </div>
+                        <div class="patient-location">เขตคลองตัน</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge warning">⚠️ เฝ้าระวัง</div>
+                        <div class="last-update">8 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card warning" data-status="warning">
+                    <div class="patient-avatar warning">
+                        <span class="avatar-text">ส</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นางสุดา เบิกบาน</div>
+                        <div class="patient-details">
+                            <span class="age">41 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">125/82</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">100</span>
+                        </div>
+                        <div class="patient-location">เขตจตุจักร</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge warning">⚠️ เฝ้าระวัง</div>
+                        <div class="last-update">12 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <!-- Normal Patients -->
+                <div class="patient-card normal" data-status="normal">
+                    <div class="patient-avatar normal">
+                        <span class="avatar-text">ส</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นางสาวสมใจ ใจดี</div>
+                        <div class="patient-details">
+                            <span class="age">45 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">120/80</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">95</span>
+                        </div>
+                        <div class="patient-location">เขตวัฒนา</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge normal">✅ ปกติ</div>
+                        <div class="last-update">1 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card normal" data-status="normal">
+                    <div class="patient-avatar normal">
+                        <span class="avatar-text">ป</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นางประภา สุขใส</div>
+                        <div class="patient-details">
+                            <span class="age">38 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">110/70</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">85</span>
+                        </div>
+                        <div class="patient-location">เขตดินแดง</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge normal">✅ ปกติ</div>
+                        <div class="last-update">3 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <div class="patient-card normal" data-status="normal">
+                    <div class="patient-avatar normal">
+                        <span class="avatar-text">ม</span>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-name">นางสาวมาลี ใจงาม</div>
+                        <div class="patient-details">
+                            <span class="age">29 ปี</span>
+                            <span class="separator">•</span>
+                            <span class="bp">115/75</span>
+                            <span class="separator">•</span>
+                            <span class="glucose">90</span>
+                        </div>
+                        <div class="patient-location">เขตบางรัก</div>
+                    </div>
+                    <div class="patient-status">
+                        <div class="status-badge normal">✅ ปกติ</div>
+                        <div class="last-update">4 ชม. ที่แล้ว</div>
+                    </div>
+                </div>
+
+                <!-- More patients would continue here... -->
+                <div class="load-more-container">
+                    <button class="load-more-btn">โหลดเพิ่มเติม (8 คนเหลือ)</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Patient Detail Modal -->
+    <div class="modal patient-modal" id="patientModal" style="display: none;">
+        <div class="modal-content patient-detail">
+            <div class="modal-header">
+                <h2 id="modalPatientName">นายสมชาย ดีมาก</h2>
+                <button class="close-btn" onclick="closePatientModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-section">
+                    <h3>ข้อมูลพื้นฐาน</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">อายุ:</span>
+                            <span class="value" id="modalAge">65 ปี</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">ที่อยู่:</span>
+                            <span class="value" id="modalAddress">เขตราชเทวี กรุงเทพฯ</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>ข้อมูลสุขภาพ</h3>
+                    <div class="health-metrics">
+                        <div class="metric-card">
+                            <div class="metric-icon">🩺</div>
+                            <div class="metric-info">
+                                <div class="metric-label">ความดันโลหิต</div>
+                                <div class="metric-value" id="modalBP">160/100 mmHg</div>
+                                <div class="metric-status danger">เสี่ยงสูง</div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">🍯</div>
+                            <div class="metric-info">
+                                <div class="metric-label">ระดับน้ำตาล</div>
+                                <div class="metric-value" id="modalGlucose">180 mg/dL</div>
+                                <div class="metric-status danger">เสี่ยงสูง</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>การดำเนินการ</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn primary">📞 ติดต่อ</button>
+                        <button class="action-btn secondary">✏️ แก้ไข</button>
+                        <button class="action-btn warning">⚠️ ติดตาม</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">หน้าหลัก</div>
+        </a>
+        <a href="analytics.html" class="nav-item">
+            <div class="nav-icon">📊</div>
+            <div class="nav-label">วิเคราะห์</div>
+        </a>
+        <a href="add-patient.html" class="nav-item add-btn">
+            <div class="nav-icon">➕</div>
+            <div class="nav-label">เพิ่ม</div>
+        </a>
+        <a href="patients.html" class="nav-item active">
+            <div class="nav-icon">📋</div>
+            <div class="nav-label">รายการ</div>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">โปรไฟล์</div>
+        </a>
+    </nav>
+
+    <script src="patients.js"></script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>วิเคราะห์ข้อมูล - Health Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="time">9:41</span>
+        </div>
+        <div class="status-right">
+            <span class="battery">🔋 100%</span>
+            <span class="signal">📶</span>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Header with Back Button -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="index.html" class="back-btn">←</a>
+                <div class="header-text">
+                    <h1>วิเคราะห์ข้อมูล</h1>
+                    <p>สถิติและกราฟแสดงผล</p>
+                </div>
+                <div class="header-action">
+                    <button class="menu-btn">⋮</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <section class="analytics-summary">
+            <div class="summary-scroll">
+                <div class="summary-card highlight">
+                    <div class="card-icon">👥</div>
+                    <div class="card-content">
+                        <div class="card-number">20</div>
+                        <div class="card-label">ผู้ป่วยทั้งหมด</div>
+                    </div>
+                </div>
+                <div class="summary-card normal">
+                    <div class="card-icon">✅</div>
+                    <div class="card-content">
+                        <div class="card-number">8</div>
+                        <div class="card-label">ปกติ (40%)</div>
+                    </div>
+                </div>
+                <div class="summary-card warning">
+                    <div class="card-icon">⚠️</div>
+                    <div class="card-content">
+                        <div class="card-number">7</div>
+                        <div class="card-label">เฝ้าระวัง (35%)</div>
+                    </div>
+                </div>
+                <div class="summary-card danger">
+                    <div class="card-icon">🚨</div>
+                    <div class="card-content">
+                        <div class="card-number">5</div>
+                        <div class="card-label">เสี่ยง (25%)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <h2 class="section-title">📊 กราฟวิเคราะห์</h2>
+            
+            <!-- Risk Distribution Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>การกระจายความเสี่ยง</h3>
+                    <div class="chart-period">
+                        <select class="period-select">
+                            <option>สัปดาห์นี้</option>
+                            <option>เดือนนี้</option>
+                            <option>ปีนี้</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="riskChart" class="mobile-chart"></canvas>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot normal"></span>
+                            <span>ปกติ 40%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot warning"></span>
+                            <span>เฝ้าระวัง 35%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot danger"></span>
+                            <span>เสี่ยง 25%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Age Distribution Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>การกระจายตามอายุ</h3>
+                    <div class="chart-info">
+                        <span class="info-text">อายุเฉลี่ย: 45 ปี</span>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="ageChart" class="mobile-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Blood Pressure Trends -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>แนวโน้มความดันโลหิต</h3>
+                    <div class="chart-info">
+                        <span class="info-text">เฉลี่ย: 128/82 mmHg</span>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="bpTrendChart" class="mobile-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Insights -->
+        <section class="insights-section">
+            <h2 class="section-title">💡 ข้อมูลสำคัญ</h2>
+            <div class="insights-list">
+                <div class="insight-card trending-up">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-content">
+                        <h3>แนวโน้มเพิ่มขึ้น</h3>
+                        <p>ผู้ป่วยความดันสูงเพิ่มขึ้น 15% จากเดือนที่แล้ว</p>
+                        <div class="insight-metric">+3 ราย</div>
+                    </div>
+                </div>
+                
+                <div class="insight-card alert">
+                    <div class="insight-icon">⚠️</div>
+                    <div class="insight-content">
+                        <h3>ต้องติดตามใกล้ชิด</h3>
+                        <p>มีผู้ป่วย 5 ราย อยู่ในกลุ่มเสี่ยงสูง</p>
+                        <div class="insight-action">
+                            <button class="action-btn">ดูรายละเอียด</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="insight-card positive">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-content">
+                        <h3>เป้าหมายการรักษา</h3>
+                        <p>ผู้ป่วยที่มีสุขภาพดีขึ้นจากการรักษา</p>
+                        <div class="insight-metric">67%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Area Analysis -->
+        <section class="area-analysis">
+            <h2 class="section-title">📍 วิเคราะห์ตามพื้นที่</h2>
+            <div class="area-list">
+                <div class="area-item">
+                    <div class="area-info">
+                        <div class="area-name">เขตวัฒนา</div>
+                        <div class="area-stats">
+                            <span class="stat normal">ปกติ 3</span>
+                            <span class="stat warning">เฝ้าระวัง 2</span>
+                            <span class="stat danger">เสี่ยง 1</span>
+                        </div>
+                    </div>
+                    <div class="area-total">6 คน</div>
+                </div>
+                
+                <div class="area-item">
+                    <div class="area-info">
+                        <div class="area-name">เขตพญาไท</div>
+                        <div class="area-stats">
+                            <span class="stat normal">ปกติ 2</span>
+                            <span class="stat warning">เฝ้าระวัง 2</span>
+                            <span class="stat danger">เสี่ยง 1</span>
+                        </div>
+                    </div>
+                    <div class="area-total">5 คน</div>
+                </div>
+                
+                <div class="area-item">
+                    <div class="area-info">
+                        <div class="area-name">เขตบางรัก</div>
+                        <div class="area-stats">
+                            <span class="stat normal">ปกติ 1</span>
+                            <span class="stat warning">เฝ้าระวัง 1</span>
+                            <span class="stat danger">เสี่ยง 1</span>
+                        </div>
+                    </div>
+                    <div class="area-total">3 คน</div>
+                </div>
+                
+                <div class="area-item">
+                    <div class="area-info">
+                        <div class="area-name">อื่นๆ</div>
+                        <div class="area-stats">
+                            <span class="stat normal">ปกติ 2</span>
+                            <span class="stat warning">เฝ้าระวัง 2</span>
+                            <span class="stat danger">เสี่ยง 2</span>
+                        </div>
+                    </div>
+                    <div class="area-total">6 คน</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <h2 class="section-title">⚡ การดำเนินการด่วน</h2>
+            <div class="action-grid">
+                <button class="quick-action-btn export">
+                    <div class="action-icon">📊</div>
+                    <span>ส่งออกรายงาน</span>
+                </button>
+                
+                <button class="quick-action-btn filter">
+                    <div class="action-icon">🔍</div>
+                    <span>กรองข้อมูล</span>
+                </button>
+                
+                <button class="quick-action-btn share">
+                    <div class="action-icon">📤</div>
+                    <span>แชร์ข้อมูล</span>
+                </button>
+                
+                <button class="quick-action-btn refresh">
+                    <div class="action-icon">🔄</div>
+                    <span>รีเฟรช</span>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">หน้าหลัก</div>
+        </a>
+        <a href="analytics.html" class="nav-item active">
+            <div class="nav-icon">📊</div>
+            <div class="nav-label">วิเคราะห์</div>
+        </a>
+        <a href="add-patient.html" class="nav-item add-btn">
+            <div class="nav-icon">➕</div>
+            <div class="nav-label">เพิ่ม</div>
+        </a>
+        <a href="patients.html" class="nav-item">
+            <div class="nav-icon">📋</div>
+            <div class="nav-label">รายการ</div>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">โปรไฟล์</div>
+        </a>
+    </nav>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="analytics.js"></script>
+</body>
+</html>

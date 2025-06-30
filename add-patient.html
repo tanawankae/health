@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>เพิ่มผู้ป่วย - Health Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="time">9:41</span>
+        </div>
+        <div class="status-right">
+            <span class="battery">🔋 100%</span>
+            <span class="signal">📶</span>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Header with Back Button -->
+        <header class="app-header form-header">
+            <div class="header-content">
+                <a href="index.html" class="back-btn">←</a>
+                <div class="header-text">
+                    <h1>เพิ่มผู้ป่วยใหม่</h1>
+                    <p>กรอกข้อมูลสุขภาพ</p>
+                </div>
+                <div class="header-action">
+                    <button class="help-btn">?</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span id="progressText">ขั้นตอนที่ 1 จาก 3</span>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <form id="patientForm" class="mobile-form">
+                <!-- Step 1: Personal Information -->
+                <div class="form-step active" id="step1">
+                    <div class="step-header">
+                        <div class="step-icon">👤</div>
+                        <h2>ข้อมูลส่วนตัว</h2>
+                        <p>กรอกข้อมูลพื้นฐานของผู้ป่วย</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            <span class="label-text">ชื่อ-นามสกุล</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-container">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="name" name="name" required 
+                                   placeholder="เช่น นายสมชาย ใจดี" 
+                                   class="form-input">
+                        </div>
+                        <div class="error-message" id="nameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age" class="form-label">
+                            <span class="label-text">อายุ</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-container">
+                            <span class="input-icon">🎂</span>
+                            <input type="number" id="age" name="age" required 
+                                   placeholder="เช่น 35" min="1" max="120"
+                                   class="form-input">
+                            <span class="input-unit">ปี</span>
+                        </div>
+                        <div class="error-message" id="ageError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address" class="form-label">
+                            <span class="label-text">ที่อยู่</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-container">
+                            <span class="input-icon">📍</span>
+                            <textarea id="address" name="address" required 
+                                      placeholder="เช่น 123 ถ.สุขุมวิท เขตวัฒนา กรุงเทพฯ"
+                                      class="form-textarea" rows="3"></textarea>
+                        </div>
+                        <div class="error-message" id="addressError"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Blood Pressure -->
+                <div class="form-step" id="step2">
+                    <div class="step-header">
+                        <div class="step-icon">🩺</div>
+                        <h2>ความดันโลหิต</h2>
+                        <p>วัดและบันทึกค่าความดันโลหิต</p>
+                    </div>
+
+                    <!-- BP Reference Guide -->
+                    <div class="reference-card">
+                        <h3>🎯 ค่าอ้างอิง</h3>
+                        <div class="reference-list">
+                            <div class="reference-item normal">
+                                <span class="ref-dot"></span>
+                                <span>ปกติ: &lt; 130/80 mmHg</span>
+                            </div>
+                            <div class="reference-item warning">
+                                <span class="ref-dot"></span>
+                                <span>เฝ้าระวัง: 130-139/80-89 mmHg</span>
+                            </div>
+                            <div class="reference-item danger">
+                                <span class="ref-dot"></span>
+                                <span>เสี่ยง: ≥ 140/90 mmHg</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="systolic" class="form-label">
+                            <span class="label-text">ความดันบน (Systolic)</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-container">
+                            <span class="input-icon">📈</span>
+                            <input type="number" id="systolic" name="systolic" required 
+                                   placeholder="เช่น 120" min="50" max="250"
+                                   class="form-input" oninput="updateBPStatus()">
+                            <span class="input-unit">mmHg</span>
+                        </div>
+                        <div class="error-message" id="systolicError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diastolic" class="form-label">
+                            <span class="label-text">ความดันล่าง (Diastolic)</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-container">
+                            <span class="input-icon">📉</span>
+                            <input type="number" id="diastolic" name="diastolic" required 
+                                   placeholder="เช่น 80" min="30" max="150"
+                                   class="form-input" oninput="updateBPStatus()">
+                            <span class="input-unit">mmHg</span>
+                        </div>
+                        <div class="error-message" id="diastolicError"></div>
+                    </div>
+
+                    <!-- Live BP Status -->
+                    <div class="status-preview" id="bpStatus" style="display: none;">
+                        <div class="status-content">
+                            <div class="status-icon" id="bpStatusIcon">💓</div>
+                            <div class="status-text">
+                                <div class="status-title" id="bpStatusTitle">สถานะความดัน</div>
+                                <div class="status-desc" id="bpStatusDesc">กรอกข้อมูลเพื่อดูสถานะ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Blood Sugar -->
+                <div class="form-step" id="step3">
+                    <div class="step-header">
+                        <div class="step-icon">🍯</div>
+                        <h2>ระดับน้ำตาลในเลือด</h2>
+                        <p>วัดและบันทึกค่าน้ำตาลในเลือด</p>
+                    </div>
+
+                    <!-- Glucose Reference Guide -->
+                    <div class="reference-card">
+                        <h3>🎯 ค่าอ้างอิง</h3>
+                        <div class="reference-list">
+                            <div class="reference-item normal">
+                                <span class="ref-dot"></span>
+                                <span>ปกติ: &lt; 100 mg/dL</span>
+                            </div>
+                            <div class="reference-item warning">
+                                <span class="ref-dot"></span>
+                                <span>เฝ้าระวัง: 100-139 mg/dL</span>
+                            </div>
+                            <div class="reference-item danger">
+                                <span class="ref-dot"></span>
+                                <span>เสี่ยง: ≥ 140 mg/dL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="glucose" class="form-label">
+                            <span class="label-text">ระดับน้ำตาล</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-container">
+                            <span class="input-icon">🩸</span>
+                            <input type="number" id="glucose" name="glucose" required 
+                                   placeholder="เช่น 95" min="50" max="500"
+                                   class="form-input" oninput="updateGlucoseStatus()">
+                            <span class="input-unit">mg/dL</span>
+                        </div>
+                        <div class="error-message" id="glucoseError"></div>
+                    </div>
+
+                    <!-- Live Glucose Status -->
+                    <div class="status-preview" id="glucoseStatus" style="display: none;">
+                        <div class="status-content">
+                            <div class="status-icon" id="glucoseStatusIcon">🍯</div>
+                            <div class="status-text">
+                                <div class="status-title" id="glucoseStatusTitle">สถานะน้ำตาล</div>
+                                <div class="status-desc" id="glucoseStatusDesc">กรอกข้อมูลเพื่อดูสถานะ</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Preview -->
+                    <div class="summary-preview" id="summaryPreview" style="display: none;">
+                        <h3>📋 สรุปข้อมูล</h3>
+                        <div class="summary-content">
+                            <div class="summary-item">
+                                <span class="summary-label">ชื่อ:</span>
+                                <span class="summary-value" id="summaryName">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">อายุ:</span>
+                                <span class="summary-value" id="summaryAge">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">ความดัน:</span>
+                                <span class="summary-value" id="summaryBP">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">น้ำตาล:</span>
+                                <span class="summary-value" id="summaryGlucose">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Navigation -->
+                <div class="form-navigation">
+                    <button type="button" id="prevBtn" class="nav-btn secondary" style="display: none;">
+                        ← ก่อนหน้า
+                    </button>
+                    <button type="button" id="nextBtn" class="nav-btn primary">
+                        ถัดไป →
+                    </button>
+                    <button type="submit" id="submitBtn" class="nav-btn success" style="display: none;">
+                        ✅ บันทึกข้อมูล
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <h2>บันทึกสำเร็จ!</h2>
+            <p>ข้อมูลผู้ป่วยถูกบันทึกเรียบร้อยแล้ว</p>
+            <div class="modal-actions">
+                <button class="btn primary" onclick="redirectToHome()">กลับหน้าหลัก</button>
+                <button class="btn secondary" onclick="addAnotherPatient()">เพิ่มผู้ป่วยอีกคน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">หน้าหลัก</div>
+        </a>
+        <a href="analytics.html" class="nav-item">
+            <div class="nav-icon">📊</div>
+            <div class="nav-label">วิเคราะห์</div>
+        </a>
+        <a href="add-patient.html" class="nav-item active add-btn">
+            <div class="nav-icon">➕</div>
+            <div class="nav-label">เพิ่ม</div>
+        </a>
+        <a href="patients.html" class="nav-item">
+            <div class="nav-icon">📋</div>
+            <div class="nav-label">รายการ</div>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">โปรไฟล์</div>
+        </a>
+    </nav>
+
+    <script src="add-patient.js"></script>
+</body>
+</html>
