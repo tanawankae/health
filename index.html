@@ -133,6 +133,12 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        .error-message {
+            font-size: 0.875rem;
+            margin-top: 5px;
+            color: #ef4444;
+        }
+
         .btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
@@ -150,6 +156,18 @@
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(239, 68, 68, 0.3);
         }
 
         .analytics-section {
@@ -198,6 +216,12 @@
             padding-bottom: 10px;
         }
 
+        .chart-card canvas {
+            width: 100% !important;
+            height: 300px !important;
+            max-height: 400px;
+        }
+
         .chart-info {
             margin-top: 20px;
             padding-top: 15px;
@@ -226,7 +250,7 @@
         .risk-summary {
             margin-top: 20px;
             padding-top: 15px;
-            border-top: 1px solid #e2e8f0;
+            border-top: チャート分析
         }
 
         .risk-item {
@@ -419,12 +443,16 @@
             th, td {
                 padding: 10px;
             }
+
+            .chart-card canvas {
+                height: 200px !important;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <div class="header" role="banner">
             <h1>🏥 Health Dashboard</h1>
             <p>ระบบติดตามและจัดการข้อมูลสุขภาพ</p>
         </div>
@@ -450,34 +478,40 @@
         </div>
 
         <!-- Add Patient Form -->
-        <div class="form-section">
-            <h2>📝 เพิ่มข้อมูลผู้ป่วย</h2>
-            <form id="patientForm">
+        <div class="form-section" role="region" aria-labelledby="form-heading">
+            <h2 id="form-heading">📝 เพิ่มข้อมูลผู้ป่วย</h2>
+            <form id="patientForm" aria-label="แบบฟอร์มเพิ่มข้อมูลผู้ป่วย">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="name">ชื่อ-นามสกุล</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" required aria-required="true" aria-describedby="name-error">
+                        <span id="name-error" class="error-message" style="display: none;"></span>
                     </div>
                     <div class="form-group">
                         <label for="age">อายุ</label>
-                        <input type="number" id="age" name="age" min="1" max="120" required>
+                        <input type="number" id="age" name="age" min="1" max="120" required aria-required="true" aria-describedby="age-error">
+                        <span id="age-error" class="error-message" style="display: none;"></span>
                     </div>
                     <div class="form-group">
                         <label for="systolic">ความดันบน (mmHg)</label>
-                        <input type="number" id="systolic" name="systolic" min="50" max="250" required>
+                        <input type="number" id="systolic" name="systolic" min="50" max="250" required aria-required="true" aria-describedby="systolic-error">
+                        <span id="systolic-error" class="error-message" style="display: none;"></span>
                     </div>
                     <div class="form-group">
                         <label for="diastolic">ความดันล่าง (mmHg)</label>
-                        <input type="number" id="diastolic" name="diastolic" min="30" max="150" required>
+                        <input type="number" id="diastolic" name="diastolic" min="30" max="150" required aria-required="true" aria-describedby="diastolic-error">
+                        <span id="diastolic-error" class="error-message" style="display: none;"></span>
                     </div>
                     <div class="form-group">
                         <label for="glucose">ระดับน้ำตาล (mg/dL)</label>
-                        <input type="number" id="glucose" name="glucose" min="50" max="500" required>
+                        <input type="number" id="glucose" name="glucose" min="50" max="500" required aria-required="true" aria-describedby="glucose-error">
+                        <span id="glucose-error" class="error-message" style="display: none;"></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="address">ที่อยู่</label>
-                    <textarea id="address" name="address" rows="3" required></textarea>
+                    <textarea id="address" name="address" rows="3" required aria-required="true" aria-describedby="address-error"></textarea>
+                    <span id="address-error" class="error-message" style="display: none;"></span>
                 </div>
                 <button type="submit" class="btn">เพิ่มข้อมูล</button>
             </form>
@@ -493,7 +527,7 @@
                 <!-- Age Distribution -->
                 <div class="chart-card">
                     <h3>📊 การกระจายตัวตามอายุ</h3>
-                    <canvas id="ageChart" width="400" height="300"></canvas>
+                    <canvas id="ageChart"></canvas>
                     <div class="chart-info">
                         <div class="info-item">
                             <span class="label">อายุเฉลี่ย:</span>
@@ -513,7 +547,7 @@
                 <!-- Blood Pressure Analysis -->
                 <div class="chart-card">
                     <h3>🩺 การวิเคราะห์ความดันโลหิต</h3>
-                    <canvas id="bpChart" width="400" height="300"></canvas>
+                    <canvas id="bpChart"></canvas>
                     <div class="chart-info">
                         <div class="info-item">
                             <span class="label">ความดันบนเฉลี่ย:</span>
@@ -533,7 +567,7 @@
                 <!-- Glucose Analysis -->
                 <div class="chart-card">
                     <h3>🍯 การวิเคราะห์ระดับน้ำตาล</h3>
-                    <canvas id="glucoseChart" width="400" height="300"></canvas>
+                    <canvas id="glucoseChart"></canvas>
                     <div class="chart-info">
                         <div class="info-item">
                             <span class="label">น้ำตาลเฉลี่ย:</span>
@@ -553,7 +587,7 @@
                 <!-- Risk Analysis -->
                 <div class="chart-card">
                     <h3>⚠️ การวิเคราะห์ความเสี่ยง</h3>
-                    <canvas id="riskChart" width="400" height="300"></canvas>
+                    <canvas id="riskChart"></canvas>
                     <div class="risk-summary">
                         <div class="risk-item">
                             <div class="risk-color normal-risk"></div>
@@ -605,6 +639,7 @@
                             <th>น้ำตาล</th>
                             <th>สถานะความดัน</th>
                             <th>สถานะน้ำตาล</th>
+                            <th>การกระทำ</th>
                         </tr>
                     </thead>
                     <tbody id="patientsTableBody">
@@ -641,12 +676,73 @@
         ];
 
         let patients = [];
-        let charts = {}; // Store chart instances
+        let charts = {};
+        const formatter = new Intl.NumberFormat('th-TH');
+
+        // Input sanitization
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+
+        // Form validation
+        function validatePatientData(patient) {
+            const errors = [];
+            const fields = {
+                name: "กรุณากรอกชื่อ-นามสกุล",
+                age: "อายุต้องอยู่ในช่วง 1-120 ปี",
+                systolic: "ความดันบนต้องอยู่ในช่วง 50-250 mmHg",
+                diastolic: "ความดันล่างต้องอยู่ในช่วง 30-150 mmHg",
+                glucose: "ระดับน้ำตาลต้องอยู่ในช่วง 50-500 mg/dL",
+                address: "กรุณากรอกที่อยู่"
+            };
+
+            // Reset error messages
+            ['name', 'age', 'systolic', 'diastolic', 'glucose', 'address'].forEach(field => {
+                document.getElementById(`${field}-error`).style.display = 'none';
+                document.getElementById(`${field}-error`).textContent = '';
+            });
+
+            if (!patient.name.trim()) {
+                errors.push(fields.name);
+                document.getElementById('name-error').textContent = fields.name;
+                document.getElementById('name-error').style.display = 'block';
+            }
+            if (patient.age < 1 || patient.age > 120 || isNaN(patient.age)) {
+                errors.push(fields.age);
+                document.getElementById('age-error').textContent = fields.age;
+                document.getElementById('age-error').style.display = 'block';
+            }
+            if (patient.systolic < 50 || patient.systolic > 250 || isNaN(patient.systolic)) {
+                errors.push(fields.systolic);
+                document.getElementById('systolic-error').textContent = fields.systolic;
+                document.getElementById('systolic-error').style.display = 'block';
+            }
+            if (patient.diastolic < 30 || patient.diastolic > 150 || isNaN(patient.diastolic)) {
+                errors.push(fields.diastolic);
+                document.getElementById('diastolic-error').textContent = fields.diastolic;
+                document.getElementById('diastolic-error').style.display = 'block';
+            }
+            if (patient.glucose < 50 || patient.glucose > 500 || isNaN(patient.glucose)) {
+                errors.push(fields.glucose);
+                document.getElementById('glucose-error').textContent = fields.glucose;
+                document.getElementById('glucose-error').style.display = 'block';
+            }
+            if (!patient.address.trim()) {
+                errors.push(fields.address);
+                document.getElementById('address-error').textContent = fields.address;
+                document.getElementById('address-error').style.display = 'block';
+            }
+
+            return errors;
+        }
 
         // Initialize with sample data
         function initializeSampleData() {
-            patients = [...samplePatients];
-            updateDisplay();
+            const storedPatients = localStorage.getItem('patients');
+            patients = storedPatients ? JSON.parse(storedPatients) : [...samplePatients];
+            debouncedUpdateDisplay();
         }
 
         // Get status based on blood pressure and glucose levels
@@ -681,7 +777,6 @@
                 const bpStatus = getBloodPressureStatus(patient.systolic, patient.diastolic);
                 const glucoseStatus = getGlucoseStatus(patient.glucose);
                 
-                // Count as danger if either BP or glucose is in danger range
                 if (bpStatus === 'danger' || glucoseStatus === 'danger') {
                     dangerCount++;
                 } else if (bpStatus === 'warning' || glucoseStatus === 'warning') {
@@ -691,10 +786,10 @@
                 }
             });
 
-            document.getElementById('normalCount').textContent = normalCount;
-            document.getElementById('warningCount').textContent = warningCount;
-            document.getElementById('dangerCount').textContent = dangerCount;
-            document.getElementById('totalCount').textContent = patients.length;
+            document.getElementById('normalCount').textContent = formatter.format(normalCount);
+            document.getElementById('warningCount').textContent = formatter.format(warningCount);
+            document.getElementById('dangerCount').textContent = formatter.format(dangerCount);
+            document.getElementById('totalCount').textContent = formatter.format(patients.length);
         }
 
         // Update patients table
@@ -709,16 +804,27 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${patient.name}</td>
-                    <td>${patient.age}</td>
-                    <td>${patient.address}</td>
-                    <td>${patient.systolic}/${patient.diastolic}</td>
-                    <td>${patient.glucose}</td>
+                    <td>${sanitizeInput(patient.name)}</td>
+                    <td>${formatter.format(patient.age)}</td>
+                    <td>${sanitizeInput(patient.address)}</td>
+                    <td>${formatter.format(patient.systolic)}/${formatter.format(patient.diastolic)}</td>
+                    <td>${formatter.format(patient.glucose)}</td>
                     <td><span class="status-badge status-${bpStatus}">${getStatusText(bpStatus)}</span></td>
                     <td><span class="status-badge status-${glucoseStatus}">${getStatusText(glucoseStatus)}</span></td>
+                    <td><button class="btn btn-delete" onclick="deletePatient(${index})">ลบ</button></td>
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        // Delete patient
+        function deletePatient(index) {
+            if (confirm('ยืนยันการลบข้อมูลผู้ป่วยนี้?')) {
+                patients.splice(index, 1);
+                localStorage.setItem('patients', JSON.stringify(patients));
+                debouncedUpdateDisplay();
+                alert('ลบข้อมูลผู้ป่วยเรียบร้อยแล้ว');
+            }
         }
 
         // Update all displays
@@ -727,6 +833,21 @@
             updateTable();
             updateAnalytics();
         }
+
+        // Debounce function for performance optimization
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        const debouncedUpdateDisplay = debounce(updateDisplay, 300);
 
         // Update analytics dashboard
         function updateAnalytics() {
@@ -743,9 +864,15 @@
         function updateAgeChart() {
             const ctx = document.getElementById('ageChart').getContext('2d');
             
-            // Destroy existing chart
             if (charts.ageChart) {
                 charts.ageChart.destroy();
+            }
+
+            if (patients.length === 0) {
+                ctx.canvas.parentNode.style.display = 'none';
+                return;
+            } else {
+                ctx.canvas.parentNode.style.display = 'block';
             }
 
             const ageGroups = {
@@ -786,6 +913,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false }
                     },
@@ -805,6 +933,13 @@
             
             if (charts.bpChart) {
                 charts.bpChart.destroy();
+            }
+
+            if (patients.length === 0) {
+                ctx.canvas.parentNode.style.display = 'none';
+                return;
+            } else {
+                ctx.canvas.parentNode.style.display = 'block';
             }
 
             const bpData = patients.map((patient, index) => ({
@@ -837,12 +972,13 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.raw.label}: ${context.parsed.x}/${context.parsed.y} mmHg`;
+                                    return `${context.raw.label}: ${formatter.format(context.parsed.x)}/${formatter.format(context.parsed.y)} mmHg`;
                                 }
                             }
                         }
@@ -865,6 +1001,13 @@
             
             if (charts.glucoseChart) {
                 charts.glucoseChart.destroy();
+            }
+
+            if (patients.length === 0) {
+                ctx.canvas.parentNode.style.display = 'none';
+                return;
+            } else {
+                ctx.canvas.parentNode.style.display = 'block';
             }
 
             const glucoseRanges = {
@@ -901,6 +1044,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -922,6 +1066,13 @@
                 charts.riskChart.destroy();
             }
 
+            if (patients.length === 0) {
+                ctx.canvas.parentNode.style.display = 'none';
+                return;
+            } else {
+                ctx.canvas.parentNode.style.display = 'block';
+            }
+
             let lowRisk = 0, mediumRisk = 0, highRisk = 0;
 
             patients.forEach(patient => {
@@ -937,10 +1088,9 @@
                 }
             });
 
-            // Update risk summary
-            document.getElementById('lowRisk').textContent = lowRisk;
-            document.getElementById('mediumRisk').textContent = mediumRisk;
-            document.getElementById('highRisk').textContent = highRisk;
+            document.getElementById('lowRisk').textContent = formatter.format(lowRisk);
+            document.getElementById('mediumRisk').textContent = formatter.format(mediumRisk);
+            document.getElementById('highRisk').textContent = formatter.format(highRisk);
 
             charts.riskChart = new Chart(ctx, {
                 type: 'pie',
@@ -963,6 +1113,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -982,7 +1133,6 @@
             const areaStats = {};
 
             patients.forEach(patient => {
-                // Extract district from address
                 const addressParts = patient.address.split(' ');
                 let district = 'อื่นๆ';
                 
@@ -1023,14 +1173,14 @@
                     item.className = 'area-item';
                     item.innerHTML = `
                         <div>
-                            <div class="area-name">${area}</div>
+                            <div class="area-name">${sanitizeInput(area)}</div>
                             <div class="area-stats">
-                                <span class="stat-chip" style="background: rgba(16, 185, 129, 0.2); color: #059669;">ปกติ ${stats.normal}</span>
-                                <span class="stat-chip" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">เฝ้าระวัง ${stats.warning}</span>
-                                <span class="stat-chip" style="background: rgba(239, 68, 68, 0.2); color: #dc2626;">เสี่ยง ${stats.danger}</span>
+                                <span class="stat-chip" style="background: rgba(16, 185, 129, 0.2); color: #059669;">ปกติ ${formatter.format(stats.normal)}</span>
+                                <span class="stat-chip" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">เฝ้าระวัง ${formatter.format(stats.warning)}</span>
+                                <span class="stat-chip" style="background: rgba(239, 68, 68, 0.2); color: #dc2626;">เสี่ยง ${formatter.format(stats.danger)}</span>
                             </div>
                         </div>
-                        <div class="area-count">${count}</div>
+                        <div class="area-count">${formatter.format(count)}</div>
                     `;
                     areaAnalysisDiv.appendChild(item);
                 });
@@ -1079,14 +1229,14 @@
                     item.className = 'age-group-item';
                     item.innerHTML = `
                         <div>
-                            <div class="age-group-name">${group}</div>
+                            <div class="age-group-name">${sanitizeInput(group)}</div>
                             <div class="age-group-stats">
-                                <span class="stat-chip" style="background: rgba(16, 185, 129, 0.2); color: #059669;">ปกติ ${data.normal}</span>
-                                <span class="stat-chip" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">เฝ้าระวัง ${data.warning}</span>
-                                <span class="stat-chip" style="background: rgba(239, 68, 68, 0.2); color: #dc2626;">เสี่ยง ${data.danger}</span>
+                                <span class="stat-chip" style="background: rgba(16, 185, 129, 0.2); color: #059669;">ปกติ ${formatter.format(data.normal)}</span>
+                                <span class="stat-chip" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">เฝ้าระวัง ${formatter.format(data.warning)}</span>
+                                <span class="stat-chip" style="background: rgba(239, 68, 68, 0.2); color: #dc2626;">เสี่ยง ${formatter.format(data.danger)}</span>
                             </div>
                         </div>
-                        <div class="age-group-count">${data.count}</div>
+                        <div class="age-group-count">${formatter.format(data.count)}</div>
                     `;
                     ageGroupAnalysisDiv.appendChild(item);
                 });
@@ -1094,19 +1244,28 @@
 
         // Update analytics statistics
         function updateAnalyticsStats() {
-            if (patients.length === 0) return;
+            if (patients.length === 0) {
+                document.getElementById('avgAge').textContent = '-';
+                document.getElementById('maxAge').textContent = '-';
+                document.getElementById('minAge').textContent = '-';
+                document.getElementById('avgSystolic').textContent = '-';
+                document.getElementById('avgDiastolic').textContent = '-';
+                document.getElementById('maxBP').textContent = '-';
+                document.getElementById('avgGlucose').textContent = '-';
+                document.getElementById('maxGlucose').textContent = '-';
+                document.getElementById('minGlucose').textContent = '-';
+                return;
+            }
 
-            // Age statistics
             const ages = patients.map(p => p.age);
             const avgAge = Math.round(ages.reduce((a, b) => a + b, 0) / ages.length);
             const maxAge = Math.max(...ages);
             const minAge = Math.min(...ages);
 
-            document.getElementById('avgAge').textContent = avgAge;
-            document.getElementById('maxAge').textContent = maxAge;
-            document.getElementById('minAge').textContent = minAge;
+            document.getElementById('avgAge').textContent = formatter.format(avgAge);
+            document.getElementById('maxAge').textContent = formatter.format(maxAge);
+            document.getElementById('minAge').textContent = formatter.format(minAge);
 
-            // Blood pressure statistics
             const systolicValues = patients.map(p => p.systolic);
             const diastolicValues = patients.map(p => p.diastolic);
             const avgSystolic = Math.round(systolicValues.reduce((a, b) => a + b, 0) / systolicValues.length);
@@ -1114,19 +1273,18 @@
             const maxSystolic = Math.max(...systolicValues);
             const maxDiastolic = Math.max(...diastolicValues);
 
-            document.getElementById('avgSystolic').textContent = avgSystolic;
-            document.getElementById('avgDiastolic').textContent = avgDiastolic;
-            document.getElementById('maxBP').textContent = `${maxSystolic}/${maxDiastolic}`;
+            document.getElementById('avgSystolic').textContent = formatter.format(avgSystolic);
+            document.getElementById('avgDiastolic').textContent = formatter.format(avgDiastolic);
+            document.getElementById('maxBP').textContent = `${formatter.format(maxSystolic)}/${formatter.format(maxDiastolic)}`;
 
-            // Glucose statistics
             const glucoseValues = patients.map(p => p.glucose);
             const avgGlucose = Math.round(glucoseValues.reduce((a, b) => a + b, 0) / glucoseValues.length);
             const maxGlucose = Math.max(...glucoseValues);
             const minGlucose = Math.min(...glucoseValues);
 
-            document.getElementById('avgGlucose').textContent = avgGlucose;
-            document.getElementById('maxGlucose').textContent = maxGlucose;
-            document.getElementById('minGlucose').textContent = minGlucose;
+            document.getElementById('avgGlucose').textContent = formatter.format(avgGlucose);
+            document.getElementById('maxGlucose').textContent = formatter.format(maxGlucose);
+            document.getElementById('minGlucose').textContent = formatter.format(minGlucose);
         }
 
         // Add new patient
@@ -1135,19 +1293,24 @@
             
             const formData = new FormData(event.target);
             const patient = {
-                name: formData.get('name'),
+                name: formData.get('name').trim(),
                 age: parseInt(formData.get('age')),
-                address: formData.get('address'),
+                address: formData.get('address').trim(),
                 systolic: parseInt(formData.get('systolic')),
                 diastolic: parseInt(formData.get('diastolic')),
                 glucose: parseInt(formData.get('glucose'))
             };
 
-            patients.push(patient);
-            updateDisplay();
-            event.target.reset();
+            const errors = validatePatientData(patient);
+            if (errors.length > 0) {
+                alert("พบข้อผิดพลาด:\n" + errors.join("\n"));
+                return;
+            }
 
-            // Show success message
+            patients.push(patient);
+            localStorage.setItem('patients', JSON.stringify(patients));
+            debouncedUpdateDisplay();
+            event.target.reset();
             alert('เพิ่มข้อมูลผู้ป่วยเรียบร้อยแล้ว');
         }
 
@@ -1156,5 +1319,12 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Chart === 'undefined') {
+                alert('ไม่สามารถโหลด Chart.js ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต');
+                return;
+            }
             initializeSampleData();
         });
+    </script>
+</body>
+</html>
