@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Dashboard - ระบบติดตามสุขภาพ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+            -webkit-text-fill-color: #666;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .normal { color: #10b981; }
+        .warning { color: #f59e0b; }
+        .danger { color: #ef4444; }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group textarea {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .analytics-section {
+            margin: 40px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .chart-info {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .info-item .label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .info-item .value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .risk-summary {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .risk-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .normal-risk { background-color: #10b981; }
+        .medium-risk { background-color: #f59e0b; }
+        .high-risk { background-color: #ef4444; }
+
+        .risk-item span {
+            flex: 1;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        .risk-item strong {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .detailed-analytics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .analytics-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .analytics-card h3 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .area-item, .age-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #f8fafc 0%, #e2e8f0 100%);
+            border-left: 4px solid #667eea;
+        }
+
+        .area-name, .age-group-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .area-count, .age-group-count {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .area-stats, .age-group-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .stat-chip {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .patients-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+        }
+
+        .table-header h2 {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f5f9;
+            transition: background-color 0.2s ease;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-normal {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .detailed-analytics {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 0.875rem;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Health Dashboard</h1>
+            <p>ระบบติดตามและจัดการข้อมูลสุขภาพ</p>
+        </div>
+
+        <!-- Dashboard Statistics -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-number normal" id="normalCount">0</div>
+                <div class="stat-label">ระดับปกติ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number warning" id="warningCount">0</div>
+                <div class="stat-label">ระดับเฝ้าระวัง</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number danger" id="dangerCount">0</div>
+                <div class="stat-label">ระดับเสี่ยง</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #6366f1;" id="totalCount">0</div>
+                <div class="stat-label">จำนวนทั้งหมด</div>
+            </div>
+        </div>
+
+        <!-- Add Patient Form -->
+        <div class="form-section">
+            <h2>📝 เพิ่มข้อมูลผู้ป่วย</h2>
+            <form id="patientForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">ชื่อ-นามสกุล</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">อายุ</label>
+                        <input type="number" id="age" name="age" min="1" max="120" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="systolic">ความดันบน (mmHg)</label>
+                        <input type="number" id="systolic" name="systolic" min="50" max="250" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="diastolic">ความดันล่าง (mmHg)</label>
+                        <input type="number" id="diastolic" name="diastolic" min="30" max="150" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="glucose">ระดับน้ำตาล (mg/dL)</label>
+                        <input type="number" id="glucose" name="glucose" min="50" max="500" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">ที่อยู่</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn">เพิ่มข้อมูล</button>
+            </form>
+        </div>
+
+        <!-- Analytics Dashboard -->
+        <div class="analytics-section">
+            <div class="section-header">
+                <h2>📈 Dashboard การวิเคราะห์</h2>
+            </div>
+            
+            <div class="charts-grid">
+                <!-- Age Distribution -->
+                <div class="chart-card">
+                    <h3>📊 การกระจายตัวตามอายุ</h3>
+                    <canvas id="ageChart" width="400" height="300"></canvas>
+                    <div class="chart-info">
+                        <div class="info-item">
+                            <span class="label">อายุเฉลี่ย:</span>
+                            <span class="value" id="avgAge">-</span> ปี
+                        </div>
+                        <div class="info-item">
+                            <span class="label">อายุมากที่สุด:</span>
+                            <span class="value" id="maxAge">-</span> ปี
+                        </div>
+                        <div class="info-item">
+                            <span class="label">อายุน้อยที่สุด:</span>
+                            <span class="value" id="minAge">-</span> ปี
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blood Pressure Analysis -->
+                <div class="chart-card">
+                    <h3>🩺 การวิเคราะห์ความดันโลหิต</h3>
+                    <canvas id="bpChart" width="400" height="300"></canvas>
+                    <div class="chart-info">
+                        <div class="info-item">
+                            <span class="label">ความดันบนเฉลี่ย:</span>
+                            <span class="value" id="avgSystolic">-</span> mmHg
+                        </div>
+                        <div class="info-item">
+                            <span class="label">ความดันล่างเฉลี่ย:</span>
+                            <span class="value" id="avgDiastolic">-</span> mmHg
+                        </div>
+                        <div class="info-item">
+                            <span class="label">ความดันสูงสุด:</span>
+                            <span class="value" id="maxBP">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Glucose Analysis -->
+                <div class="chart-card">
+                    <h3>🍯 การวิเคราะห์ระดับน้ำตาล</h3>
+                    <canvas id="glucoseChart" width="400" height="300"></canvas>
+                    <div class="chart-info">
+                        <div class="info-item">
+                            <span class="label">น้ำตาลเฉลี่ย:</span>
+                            <span class="value" id="avgGlucose">-</span> mg/dL
+                        </div>
+                        <div class="info-item">
+                            <span class="label">น้ำตาลสูงสุด:</span>
+                            <span class="value" id="maxGlucose">-</span> mg/dL
+                        </div>
+                        <div class="info-item">
+                            <span class="label">น้ำตาลต่ำสุด:</span>
+                            <span class="value" id="minGlucose">-</span> mg/dL
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Analysis -->
+                <div class="chart-card">
+                    <h3>⚠️ การวิเคราะห์ความเสี่ยง</h3>
+                    <canvas id="riskChart" width="400" height="300"></canvas>
+                    <div class="risk-summary">
+                        <div class="risk-item">
+                            <div class="risk-color normal-risk"></div>
+                            <span>ความเสี่ยงต่ำ</span>
+                            <strong id="lowRisk">0</strong>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-color medium-risk"></div>
+                            <span>ความเสี่ยงปานกลาง</span>
+                            <strong id="mediumRisk">0</strong>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-color high-risk"></div>
+                            <span>ความเสี่ยงสูง</span>
+                            <strong id="highRisk">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analytics -->
+            <div class="detailed-analytics">
+                <div class="analytics-card">
+                    <h3>📍 การวิเคราะห์ตามเขต</h3>
+                    <div id="areaAnalysis" class="area-analysis"></div>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>👥 การวิเคราะห์ตามกลุ่มอายุ</h3>
+                    <div id="ageGroupAnalysis" class="age-group-analysis"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patients Table -->
+        <div class="patients-table">
+            <div class="table-header">
+                <h2>📊 รายการผู้ป่วย</h2>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>อายุ</th>
+                            <th>ที่อยู่</th>
+                            <th>ความดันโลหิต</th>
+                            <th>น้ำตาล</th>
+                            <th>สถานะความดัน</th>
+                            <th>สถานะน้ำตาล</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        // Sample data for 20 patients
+        const samplePatients = [
+            {name: "นางสาวสมใจ ใจดี", age: 45, address: "123 ถ.สุขุมวิท แขวงคลองตัน เขตวัฒนา กรุงเทพฯ", systolic: 120, diastolic: 80, glucose: 95},
+            {name: "นายวิชัย เก่งกาจ", age: 52, address: "456 ถ.พหลโยธิน แขวงสามเสนใน เขตพญาไท กรุงเทพฯ", systolic: 140, diastolic: 90, glucose: 110},
+            {name: "นางประภา สุขใส", age: 38, address: "789 ถ.รัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพฯ", systolic: 110, diastolic: 70, glucose: 85},
+            {name: "นายสมชาย ดีมาก", age: 65, address: "321 ถ.เพชรบุรี แขวงมักกะสัน เขตราชเทวี กรุงเทพฯ", systolic: 160, diastolic: 100, glucose: 180},
+            {name: "นางสาวมาลี ใจงาม", age: 29, address: "654 ถ.สีลม แขวงสุริยวงศ์ เขตบางรัก กรุงเทพฯ", systolic: 115, diastolic: 75, glucose: 90},
+            {name: "นายอภิชัย แข็งแรง", age: 48, address: "987 ถ.พระราม 4 แขวงคลองตัน เขตคลองตัน กรุงเทพฯ", systolic: 135, diastolic: 85, glucose: 125},
+            {name: "นางสุดา เบิกบาน", age: 41, address: "147 ถ.วิภาวดี แขวงจตุจักร เขตจตุจักร กรุงเทพฯ", systolic: 125, diastolic: 82, glucose: 100},
+            {name: "นายกิตติ ร่าเริง", age: 56, address: "258 ถ.ลาดพร้าว แขวงลาดพร้าว เขตวังทองหลาง กรุงเทพฯ", systolic: 150, diastolic: 95, glucose: 145},
+            {name: "นางสาววิไล สดใส", age: 33, address: "369 ถ.อโศก แขวงคลองตัน เขตวัฒนา กรุงเทพฯ", systolic: 108, diastolic: 68, glucose: 88},
+            {name: "นายปิยะ เฉลียวฉลาด", age: 44, address: "741 ถ.บางนา แขวงบางนา เขตบางนา กรุงเทพฯ", systolic: 132, diastolic: 88, glucose: 105},
+            {name: "นางจิราพร สวยงาม", age: 39, address: "852 ถ.รามคำแหง แขวงหัวหมาก เขตบางกะปิ กรุงเทพฯ", systolic: 118, diastolic: 78, glucose: 92},
+            {name: "นายสุรชัย กล้าหาญ", age: 61, address: "963 ถ.เจริญกรุง แขวงบางรัก เขตบางรัก กรุงเทพฯ", systolic: 155, diastolic: 98, glucose: 165},
+            {name: "นางสาวพิมพ์ใจ น่ารัก", age: 27, address: "159 ถ.ประชาชื่น แขวงบางซื่อ เขตบางซื่อ กรุงเทพฯ", systolic: 112, diastolic: 72, glucose: 82},
+            {name: "นายธนกร มั่นคง", age: 50, address: "357 ถ.เพชรเกษม แขวงบางแค เขตบางแค กรุงเทพฯ", systolic: 142, diastolic: 92, glucose: 130},
+            {name: "นางรัศมี แจ่มใส", age: 46, address: "468 ถ.กรุงเทพกรีฑา แขวงหัวหมาก เขตบางกะปิ กรุงเทพฯ", systolic: 128, diastolic: 84, glucose: 98},
+            {name: "นายชาคริต ใจกว้าง", age: 35, address: "579 ถ.นวมินทร์ แขวงนวลจันทร์ เขตบึงกุ่ม กรุงเทพฯ", systolic: 122, diastolic: 80, glucose: 95},
+            {name: "นางสาวศิริกาญจน์ อ่อนหวาน", age: 31, address: "680 ถ.ศรีนครินทร์ แขวงสวนหลวง เขตสวนหลวง กรุงเทพฯ", systolic: 116, diastolic: 76, glucose: 87},
+            {name: "นายอนันต์ มีชัย", age: 58, address: "791 ถ.พุทธมณฑล แขวงบางมด เขตทุ่งครุ กรุงเทพฯ", systolic: 148, diastolic: 94, glucose: 155},
+            {name: "นางภาวนา เรืองรอง", age: 42, address: "802 ถ.รัตนาธิเบศร์ แขวงบางกรวย เขตบางกรวย นนทบุรี", systolic: 126, diastolic: 83, glucose: 102},
+            {name: "นายประดิษฐ์ เจริญรุ่งเรือง", age: 54, address: "913 ถ.บรมราชชนนี แขวงตลิ่งชัน เขตตลิ่งชัน กรุงเทพฯ", systolic: 138, diastolic: 89, glucose: 120}
+        ];
+
+        let patients = [];
+        let charts = {}; // Store chart instances
+
+        // Initialize with sample data
+        function initializeSampleData() {
+            patients = [...samplePatients];
+            updateDisplay();
+        }
+
+        // Get status based on blood pressure and glucose levels
+        function getBloodPressureStatus(systolic, diastolic) {
+            if (systolic >= 140 || diastolic >= 90) return 'danger';
+            if (systolic >= 130 || diastolic >= 80) return 'warning';
+            return 'normal';
+        }
+
+        function getGlucoseStatus(glucose) {
+            if (glucose >= 140) return 'danger';
+            if (glucose >= 100) return 'warning';
+            return 'normal';
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'normal': return 'ปกติ';
+                case 'warning': return 'เฝ้าระวัง';
+                case 'danger': return 'เสี่ยง';
+                default: return 'ไม่ระบุ';
+            }
+        }
+
+        // Update dashboard statistics
+        function updateStatistics() {
+            let normalCount = 0;
+            let warningCount = 0;
+            let dangerCount = 0;
+
+            patients.forEach(patient => {
+                const bpStatus = getBloodPressureStatus(patient.systolic, patient.diastolic);
+                const glucoseStatus = getGlucoseStatus(patient.glucose);
+                
+                // Count as danger if either BP or glucose is in danger range
+                if (bpStatus === 'danger' || glucoseStatus === 'danger') {
+                    dangerCount++;
+                } else if (bpStatus === 'warning' || glucoseStatus === 'warning') {
+                    warningCount++;
+                } else {
+                    normalCount++;
+                }
+            });
+
+            document.getElementById('normalCount').textContent = normalCount;
+            document.getElementById('warningCount').textContent = warningCount;
+            document.getElementById('dangerCount').textContent = dangerCount;
+            document.getElementById('totalCount').textContent = patients.length;
+        }
+
+        // Update patients table
+        function updateTable() {
+            const tbody = document.getElementById('patientsTableBody');
+            tbody.innerHTML = '';
+
+            patients.forEach((patient, index) => {
+                const bpStatus = getBloodPressureStatus(patient.systolic, patient.diastolic);
+                const glucoseStatus = getGlucoseStatus(patient.glucose);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.age}</td>
+                    <td>${patient.address}</td>
+                    <td>${patient.systolic}/${patient.diastolic}</td>
+                    <td>${patient.glucose}</td>
+                    <td><span class="status-badge status-${bpStatus}">${getStatusText(bpStatus)}</span></td>
+                    <td><span class="status-badge status-${glucoseStatus}">${getStatusText(glucoseStatus)}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update all displays
+        function updateDisplay() {
+            updateStatistics();
+            updateTable();
+            updateAnalytics();
+        }
+
+        // Update analytics dashboard
+        function updateAnalytics() {
+            updateAgeChart();
+            updateBloodPressureChart();
+            updateGlucoseChart();
+            updateRiskChart();
+            updateAreaAnalysis();
+            updateAgeGroupAnalysis();
+            updateAnalyticsStats();
+        }
+
+        // Age distribution chart
+        function updateAgeChart() {
+            const ctx = document.getElementById('ageChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (charts.ageChart) {
+                charts.ageChart.destroy();
+            }
+
+            const ageGroups = {
+                '20-30': 0, '31-40': 0, '41-50': 0, '51-60': 0, '60+': 0
+            };
+
+            patients.forEach(patient => {
+                if (patient.age <= 30) ageGroups['20-30']++;
+                else if (patient.age <= 40) ageGroups['31-40']++;
+                else if (patient.age <= 50) ageGroups['41-50']++;
+                else if (patient.age <= 60) ageGroups['51-60']++;
+                else ageGroups['60+']++;
+            });
+
+            charts.ageChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(ageGroups),
+                    datasets: [{
+                        label: 'จำนวนคน',
+                        data: Object.values(ageGroups),
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(139, 92, 246, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(139, 92, 246, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Blood pressure analysis chart
+        function updateBloodPressureChart() {
+            const ctx = document.getElementById('bpChart').getContext('2d');
+            
+            if (charts.bpChart) {
+                charts.bpChart.destroy();
+            }
+
+            const bpData = patients.map((patient, index) => ({
+                x: patient.systolic,
+                y: patient.diastolic,
+                label: patient.name
+            }));
+
+            charts.bpChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'ความดันโลหิต',
+                        data: bpData,
+                        backgroundColor: bpData.map(point => {
+                            const status = getBloodPressureStatus(point.x, point.y);
+                            return status === 'danger' ? 'rgba(239, 68, 68, 0.7)' :
+                                   status === 'warning' ? 'rgba(245, 158, 11, 0.7)' :
+                                   'rgba(16, 185, 129, 0.7)';
+                        }),
+                        borderColor: bpData.map(point => {
+                            const status = getBloodPressureStatus(point.x, point.y);
+                            return status === 'danger' ? 'rgba(239, 68, 68, 1)' :
+                                   status === 'warning' ? 'rgba(245, 158, 11, 1)' :
+                                   'rgba(16, 185, 129, 1)';
+                        }),
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.raw.label}: ${context.parsed.x}/${context.parsed.y} mmHg`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'ความดันบน (mmHg)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'ความดันล่าง (mmHg)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Glucose level chart
+        function updateGlucoseChart() {
+            const ctx = document.getElementById('glucoseChart').getContext('2d');
+            
+            if (charts.glucoseChart) {
+                charts.glucoseChart.destroy();
+            }
+
+            const glucoseRanges = {
+                'ปกติ (< 100)': 0,
+                'เฝ้าระวัง (100-139)': 0,
+                'เสี่ยง (≥ 140)': 0
+            };
+
+            patients.forEach(patient => {
+                const status = getGlucoseStatus(patient.glucose);
+                if (status === 'normal') glucoseRanges['ปกติ (< 100)']++;
+                else if (status === 'warning') glucoseRanges['เฝ้าระวัง (100-139)']++;
+                else glucoseRanges['เสี่ยง (≥ 140)']++;
+            });
+
+            charts.glucoseChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(glucoseRanges),
+                    datasets: [{
+                        data: Object.values(glucoseRanges),
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Risk analysis chart
+        function updateRiskChart() {
+            const ctx = document.getElementById('riskChart').getContext('2d');
+            
+            if (charts.riskChart) {
+                charts.riskChart.destroy();
+            }
+
+            let lowRisk = 0, mediumRisk = 0, highRisk = 0;
+
+            patients.forEach(patient => {
+                const bpStatus = getBloodPressureStatus(patient.systolic, patient.diastolic);
+                const glucoseStatus = getGlucoseStatus(patient.glucose);
+                
+                if (bpStatus === 'danger' || glucoseStatus === 'danger') {
+                    highRisk++;
+                } else if (bpStatus === 'warning' || glucoseStatus === 'warning') {
+                    mediumRisk++;
+                } else {
+                    lowRisk++;
+                }
+            });
+
+            // Update risk summary
+            document.getElementById('lowRisk').textContent = lowRisk;
+            document.getElementById('mediumRisk').textContent = mediumRisk;
+            document.getElementById('highRisk').textContent = highRisk;
+
+            charts.riskChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['ความเสี่ยงต่ำ', 'ความเสี่ยงปานกลาง', 'ความเสี่ยงสูง'],
+                    datasets: [{
+                        data: [lowRisk, mediumRisk, highRisk],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Area analysis
+        function updateAreaAnalysis() {
+            const areaCount = {};
+            const areaStats = {};
+
+            patients.forEach(patient => {
+                // Extract district from address
+                const addressParts = patient.address.split(' ');
+                let district = 'อื่นๆ';
+                
+                for (let part of addressParts) {
+                    if (part.includes('เขต')) {
+                        district = part;
+                        break;
+                    }
+                }
+
+                if (!areaCount[district]) {
+                    areaCount[district] = 0;
+                    areaStats[district] = { normal: 0, warning: 0, danger: 0 };
+                }
+                
+                areaCount[district]++;
+                
+                const bpStatus = getBloodPressureStatus(patient.systolic, patient.diastolic);
+                const glucoseStatus = getGlucoseStatus(patient.glucose);
+                
+                if (bpStatus === 'danger' || glucoseStatus === 'danger') {
+                    areaStats[district].danger++;
+                } else if (bpStatus === 'warning' || glucoseStatus === 'warning') {
+                    areaStats[district].warning++;
+                } else {
+                    areaStats[district].normal++;
+                }
+            });
+
+            const areaAnalysisDiv = document.getElementById('areaAnalysis');
+            areaAnalysisDiv.innerHTML = '';
+
+            Object.entries(areaCount)
+                .sort(([,a], [,b]) => b - a)
+                .forEach(([area, count]) => {
+                    const stats = areaStats[area];
+                    const item = document.createElement('div');
+                    item.className = 'area-item';
+                    item.innerHTML = `
+                        <div>
+                            <div class="area-name">${area}</div>
+                            <div class="area-stats">
+                                <span class="stat-chip" style="background: rgba(16, 185, 129, 0.2); color: #059669;">ปกติ ${stats.normal}</span>
+                                <span class="stat-chip" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">เฝ้าระวัง ${stats.warning}</span>
+                                <span class="stat-chip" style="background: rgba(239, 68, 68, 0.2); color: #dc2626;">เสี่ยง ${stats.danger}</span>
+                            </div>
+                        </div>
+                        <div class="area-count">${count}</div>
+                    `;
+                    areaAnalysisDiv.appendChild(item);
+                });
+        }
+
+        // Age group analysis
+        function updateAgeGroupAnalysis() {
+            const ageGroups = {
+                'วัยหนุ่มสาว (20-30)': { count: 0, normal: 0, warning: 0, danger: 0 },
+                'วัยผู้ใหญ่ตอนต้น (31-40)': { count: 0, normal: 0, warning: 0, danger: 0 },
+                'วัยผู้ใหญ่ตอนกลาง (41-50)': { count: 0, normal: 0, warning: 0, danger: 0 },
+                'วัยผู้ใหญ่ตอนปลาย (51-60)': { count: 0, normal: 0, warning: 0, danger: 0 },
+                'วัยสูงอายุ (60+)': { count: 0, normal: 0, warning: 0, danger: 0 }
+            };
+
+            patients.forEach(patient => {
+                let group;
+                if (patient.age <= 30) group = 'วัยหนุ่มสาว (20-30)';
+                else if (patient.age <= 40) group = 'วัยผู้ใหญ่ตอนต้น (31-40)';
+                else if (patient.age <= 50) group = 'วัยผู้ใหญ่ตอนกลาง (41-50)';
+                else if (patient.age <= 60) group = 'วัยผู้ใหญ่ตอนปลาย (51-60)';
+                else group = 'วัยสูงอายุ (60+)';
+
+                ageGroups[group].count++;
+
+                const bpStatus = getBloodPressureStatus(patient.systolic, patient.diastolic);
+                const glucoseStatus = getGlucoseStatus(patient.glucose);
+                
+                if (bpStatus === 'danger' || glucoseStatus === 'danger') {
+                    ageGroups[group].danger++;
+                } else if (bpStatus === 'warning' || glucoseStatus === 'warning') {
+                    ageGroups[group].warning++;
+                } else {
+                    ageGroups[group].normal++;
+                }
+            });
+
+            const ageGroupAnalysisDiv = document.getElementById('ageGroupAnalysis');
+            ageGroupAnalysisDiv.innerHTML = '';
+
+            Object.entries(ageGroups)
+                .filter(([, data]) => data.count > 0)
+                .sort(([,a], [,b]) => b.count - a.count)
+                .forEach(([group, data]) => {
+                    const item = document.createElement('div');
+                    item.className = 'age-group-item';
+                    item.innerHTML = `
+                        <div>
+                            <div class="age-group-name">${group}</div>
+                            <div class="age-group-stats">
+                                <span class="stat-chip" style="background: rgba(16, 185, 129, 0.2); color: #059669;">ปกติ ${data.normal}</span>
+                                <span class="stat-chip" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">เฝ้าระวัง ${data.warning}</span>
+                                <span class="stat-chip" style="background: rgba(239, 68, 68, 0.2); color: #dc2626;">เสี่ยง ${data.danger}</span>
+                            </div>
+                        </div>
+                        <div class="age-group-count">${data.count}</div>
+                    `;
+                    ageGroupAnalysisDiv.appendChild(item);
+                });
+        }
+
+        // Update analytics statistics
+        function updateAnalyticsStats() {
+            if (patients.length === 0) return;
+
+            // Age statistics
+            const ages = patients.map(p => p.age);
+            const avgAge = Math.round(ages.reduce((a, b) => a + b, 0) / ages.length);
+            const maxAge = Math.max(...ages);
+            const minAge = Math.min(...ages);
+
+            document.getElementById('avgAge').textContent = avgAge;
+            document.getElementById('maxAge').textContent = maxAge;
+            document.getElementById('minAge').textContent = minAge;
+
+            // Blood pressure statistics
+            const systolicValues = patients.map(p => p.systolic);
+            const diastolicValues = patients.map(p => p.diastolic);
+            const avgSystolic = Math.round(systolicValues.reduce((a, b) => a + b, 0) / systolicValues.length);
+            const avgDiastolic = Math.round(diastolicValues.reduce((a, b) => a + b, 0) / diastolicValues.length);
+            const maxSystolic = Math.max(...systolicValues);
+            const maxDiastolic = Math.max(...diastolicValues);
+
+            document.getElementById('avgSystolic').textContent = avgSystolic;
+            document.getElementById('avgDiastolic').textContent = avgDiastolic;
+            document.getElementById('maxBP').textContent = `${maxSystolic}/${maxDiastolic}`;
+
+            // Glucose statistics
+            const glucoseValues = patients.map(p => p.glucose);
+            const avgGlucose = Math.round(glucoseValues.reduce((a, b) => a + b, 0) / glucoseValues.length);
+            const maxGlucose = Math.max(...glucoseValues);
+            const minGlucose = Math.min(...glucoseValues);
+
+            document.getElementById('avgGlucose').textContent = avgGlucose;
+            document.getElementById('maxGlucose').textContent = maxGlucose;
+            document.getElementById('minGlucose').textContent = minGlucose;
+        }
+
+        // Add new patient
+        function addPatient(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const patient = {
+                name: formData.get('name'),
+                age: parseInt(formData.get('age')),
+                address: formData.get('address'),
+                systolic: parseInt(formData.get('systolic')),
+                diastolic: parseInt(formData.get('diastolic')),
+                glucose: parseInt(formData.get('glucose'))
+            };
+
+            patients.push(patient);
+            updateDisplay();
+            event.target.reset();
+
+            // Show success message
+            alert('เพิ่มข้อมูลผู้ป่วยเรียบร้อยแล้ว');
+        }
+
+        // Event listeners
+        document.getElementById('patientForm').addEventListener('submit', addPatient);
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSampleData();
+        });
